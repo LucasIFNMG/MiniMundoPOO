@@ -130,8 +130,157 @@ import java.util.logging.Logger;
 
     }
 
-    //TODO public Cliente Abrir(int id){}
-        
+    public Cliente Abrir(int id)
+    {
+        try{
+
+            PreparedStatement sql = this.getConexao()
+                    .prepareStatement("select * from Clientes where id = ?");
+
+            sql.setInt(1, id);
+
+            ResultSet resultado = sql.executeQuery();
+
+            resultado.next();
+
+            Cliente cliente = new Cliente();
+
+            try
+            {
+                cliente.setId( resultado.getInt("id") );
+                cliente.setNome( resultado.getString("nome") );
+                cliente.setCpf( resultado.getString("cpf") );
+                abrirTelefones(cliente);
+                cliente.setRua( resultado.getString("rua") );
+                cliente.setNumero( resultado.getInt("numero") );
+                cliente.setBairro( resultado.getString("bairro") );
+            }
+
+            catch(Exception ex)
+            {
+                cliente = null;
+            }
+
+            return cliente;
+
+        }
+
+        catch(SQLException ex)
+        {
+            System.out.println(ex.getMessage() );
+        }
+
+        return null;
+
+    }
+
+    public void abrirTelefones(Cliente cliente)
+    {
+        try
+        {
+            PreparedStatement sql = this.getConexao()
+                    .prepareStatement("select telefone from ClientesTelefones where cliente_id = ?");
+            
+            sql.setInt(1, cliente.getId() );
+
+            ResultSet resultado = sql.executeQuery();
+
+            while(resultado.next() )
+            {
+                cliente.addTelefone(resultado.getString("telefone") );
+            }
+            
+        } catch (SQLException ex)
+        {
+            Logger.getLogger(AlunoRepositorio.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+    }
+
+    public boolean Apagar(Cliente obj)
+    {
+        try{
+            PreparedStatement sql = this.getConexao()
+                    .prepareStatement("delete from Clientes where id = ?");
+            
+            sql.setInt(1, obj.getId() );
+
+            if(sql.executeUpdate() > 0)
+                return true;
+            else
+                return false;
+
+        } catch (SQLException ex)
+        {
+            System.out.println(ex.getMessage() );
+        }
+        return false;
+    }
+    
+    public List<Cliente> Buscar(Cliente filtro)
+    {
+        try
+        {
+            String where = "";
+
+            if(filtro != null)
+            {
+                if(filtro.getNome() != null && !filtro.getNome().isEmpty() )
+                    where+= "nome like '%"+filtro.getNome() + "%'";
+
+                if(filtro.getCpf() != null && !filtro.getCpf().isEmpty() &&
+                        !"000.000.000-00".equals(filtro.getCpf() ) )
+                        {
+                            if(where.length() > 0)
+                                where +=" and ";
+                            where += "cpf = ''"+filtro.getCpf().replace(".", "").replace("-", "") + "'";
+
+                        }
+            }
+
+            String consulta = "select * from Clientes";
+
+            if(where.length() > 0)
+                consulta += " where " + where;
+
+            PreparedStatement sql = this.getConexao()
+                    .prepareStatement(consulta);
+
+            ResultSet resultado = sql.executeQuery();
+
+            List<Cliente> clientes = new ArrayList<>();
+
+            while(resultado.next() )
+            {
+                Cliente cliente = new Cliente();
+
+                try
+                {
+                    cliente.setId( resultado.getInt("id") );
+                    cliente.setNome( resultado.getString("nome") );
+                    cliente.setCpf( resultado.getString("cpf") );
+                    abrirTelefones(cliente);
+                    cliente.setRua( resultado.getString("rua") );
+                    cliente.setNumero( resultado.getInt("numero") );
+                    cliente.setBairro( resultado.getString("bairro") );
+                } catch(Exception ex)
+                {
+                    cliente = null;
+                }
+
+                clientes.add(cliente);
+            }
+            return clientes;
+            
+
+        } catch (SQLException ex)
+        {
+            System.out.println(ex.getMessage() );
+        } 
+
+        return null;
+
+
 
 
 
@@ -139,10 +288,4 @@ import java.util.logging.Logger;
 
 
 
-
-
-
-
-
-
- }
+}
