@@ -125,7 +125,7 @@ import java.util.logging.Logger;
 
         } catch (SQLException ex) 
         {
-            Logger.getLogger(AlunoRepositorio.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(ClienteRepositorio.class.getName()).log(Level.SEVERE, null, ex);
         }
 
     }
