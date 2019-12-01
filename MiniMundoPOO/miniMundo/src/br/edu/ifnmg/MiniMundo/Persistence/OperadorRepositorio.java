@@ -242,6 +242,8 @@ import java.util.logging.Logger;
                     operador.setId(resultado.getInt("id"));
                     operador.setNome(resultado.getString("nome"));
                     operador.setCpf(resultado.getString("cpf"));
+                    operador.setLogin(resultado.getString("login"));
+                    operador.setSenha(resultado.getString("senha"));
                     abrirTelefones(operador);
 
                 } catch(final Exception ex)
@@ -263,4 +265,65 @@ import java.util.logging.Logger;
         return null;
 
     }
+    
+    public List<Operador> BuscarLoginSenha(final Operador filtro)
+    {
+        try
+        {
+            String where = "";
+
+            if(filtro != null)
+            {
+                if(filtro.getLogin() != null)
+                    where += "login = " + filtro.getLogin() + "';";
+
+                if(filtro.getSenha() != null)
+                        where += "senha = " + filtro.getSenha() + "';";
+
+            }
+
+           String consultaLogin = "select login from Operadores";
+
+           if(where.length() > 0)
+           {
+               consultaLogin += " where " + where;
+           }
+
+           final PreparedStatement sql = this.getConexao()
+                .prepareStatement(consultaLogin);
+
+            final ResultSet resultado = sql.executeQuery();
+
+            final List<Operador> operadores = new ArrayList<>();
+
+            while(resultado.next() )
+            {
+                Operador operador = new Operador();
+
+                try
+                {
+                    operador.setNome(resultado.getString("nome"));
+                    operador.setLogin(resultado.getString("login"));
+                    operador.setSenha(resultado.getString("senha"));
+                    
+                } catch(final Exception ex)
+                {
+                    operador = null;
+                }
+
+                operadores.add(operador);
+
+            }
+
+            return operadores;
+
+        } catch(final SQLException ex)
+        {
+            System.out.println(ex.getMessage() );
+        }
+
+        return null;
+
+    }
+    
 }

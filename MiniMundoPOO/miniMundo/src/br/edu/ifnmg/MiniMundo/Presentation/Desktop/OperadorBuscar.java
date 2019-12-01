@@ -3,14 +3,11 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package br.edu.ifnmg.POO.Presentation.Desktop;
+package br.edu.ifnmg.MiniMundo.Presentation.Desktop;
 
-import br.edu.ifnmg.POO.DomainModel.Aluno;
-import br.edu.ifnmg.POO.DomainModel.ErroValidacaoException;
-import br.edu.ifnmg.POO.DomainModel.Professor;
-import br.edu.ifnmg.POO.DomainModel.Turma;
-import br.edu.ifnmg.POO.Persistence.ProfessorRepositorio;
-import br.edu.ifnmg.POO.Persistence.TurmaRepositorio;
+import br.edu.ifnmg.MiniMundo.DomainModel.Operador;
+import br.edu.ifnmg.MiniMundo.DomainModel.ErroValidacaoException;
+import br.edu.ifnmg.MiniMundo.Persistence.OperadorRepositorio;
 import java.util.List;
 import java.util.Vector;
 import java.util.logging.Level;
